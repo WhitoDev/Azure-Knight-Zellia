@@ -18,7 +18,7 @@ public class CameraController2D : MonoBehaviour
     private BoundSides cameraBoundSides;
     private BoundSides targetBoundSides;
 
-    void LateUpdate()
+    void Update()
     {
         CalculateBounds(target.bounds, ref targetBoundSides);
         CalculateBounds(new Bounds(this.transform.position, cameraBoxSize), ref cameraBoundSides);
