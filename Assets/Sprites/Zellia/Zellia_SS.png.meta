@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cbe43f2f4e1549c43a2292107bfdfe71
-timeCreated: 1481656468
+timeCreated: 1481736664
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -274,7 +274,7 @@ TextureImporter:
         width: 90
         height: 94
       alignment: 9
-      pivot: {x: .469999999, y: .5}
+      pivot: {x: .472000003, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Zellia_SS_19
       rect:
