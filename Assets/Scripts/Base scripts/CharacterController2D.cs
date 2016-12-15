@@ -6,9 +6,7 @@ public class CharacterController2D : RayCaster
     float slopeClimbMaxAngle = 60;
 
     void Start()
-    {
-        if (collisionMask == null)
-            Debug.LogError("Please set a layer for the collision mask on the CharacterController2D script for " + this.gameObject.name);        
+    {        
     }
 
     public void Move(ref Vector2 moveVec, bool standingOnPlatform = false)
