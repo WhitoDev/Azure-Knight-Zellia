@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
         public bool holdJumpButton;
         public bool holdDashButton;
         public bool takingDamage;
+        public int extraJumps;
 
         public void Reset()
         {
@@ -80,16 +81,25 @@ public class Player : MonoBehaviour
             inputVec.x += 1;
         }
 
-        if ((Input.GetKeyDown(KeyCode.Space) || jump) && controller.cs.collidingDown && ! controller.cs.collidingUp)
+        if ((Input.GetKeyDown(KeyCode.Space) || jump) && (controller.cs.collidingDown || flags.extraJumps > 0) && ! controller.cs.collidingUp)
         {
             verticalVelocity = maxJumpForce;
             flags.pressedJumpButton = true;
+            if(!controller.cs.collidingDown)
+                flags.extraJumps--;
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && verticalVelocity > minJumpForce)
         {
             verticalVelocity = minJumpForce;
         }
+
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            flags.pressedAttackButton = true;
+        }
+
+
     }
 
     void SetSpriteDirecction()
@@ -111,7 +121,7 @@ public class Player : MonoBehaviour
     }
 
     void Update()
-    {        
+    {
         ReadInput();        
         InputToVelocity();
         SetSpriteDirecction();
@@ -124,6 +134,14 @@ public class Player : MonoBehaviour
 
         CalculateJumpForceAndGravity();
         SetAnimationParameters();
+
+        if(controller.cs.collidingDown)
+        {
+            flags.extraJumps = 1;
+            verticalVelocity = 0;
+        }
+
+        flags.Reset();
 
         moveVecOld = moveVec;
     }

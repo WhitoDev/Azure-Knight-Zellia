@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 [RequireComponent(typeof(Camera))]
 public class CameraController2D : PixelPerfectCamera 
@@ -60,3 +61,17 @@ public class CameraController2D : PixelPerfectCamera
         boundSides.down = bounds.min.y;
     }
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(CameraController2D))]
+public class CameraControllerEditor: PixelPerfectCameraEditor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        CameraController2D controller = (CameraController2D)target;
+        controller.target = EditorGUILayout.ObjectField("Target to follow", controller.target,typeof(Collider2D)) as Collider2D;
+        controller.cameraBoxSize = EditorGUILayout.Vector2Field("Camera bounds size", controller.cameraBoxSize);
+    }
+}
+#endif

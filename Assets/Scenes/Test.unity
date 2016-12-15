@@ -220,9 +220,9 @@ Camera:
     height: 1
   near clip plane: .300000012
   far clip plane: 1000
-  field of view: 53.844059
+  field of view: 53.4162254
   orthographic: 1
-  orthographic size: 5.078125
+  orthographic size: 5.03125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -259,13 +259,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fitType: 0
-  targetPixelHeight: 325
+  targetPixelHeight: 322
   parallaxLayerCount: 10
   cameraZoom: 1
   pixelatedPostProcessing: 1
   heightError: 0
-  showGizmos: 1
-  subpixelOffset: {x: 0, y: 0}
+  showGizmos: 0
+  subpixelOffset: {x: .00999999978, y: .00999999978}
   pixelZoomMode: 0
   cameraBoxSize: {x: 4, y: 8}
   target: {fileID: 1047556217}
