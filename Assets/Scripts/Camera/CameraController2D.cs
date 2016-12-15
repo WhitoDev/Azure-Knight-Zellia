@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 [RequireComponent(typeof(Camera))]
-public class CameraController2D : MonoBehaviour 
+public class CameraController2D : PixelPerfectCamera 
 {
     public Vector2 cameraBoxSize;
     public Collider2D target;   
@@ -18,7 +19,7 @@ public class CameraController2D : MonoBehaviour
     private BoundSides cameraBoundSides;
     private BoundSides targetBoundSides;
 
-    void Update()
+    public override void LateUpdate()
     {
         CalculateBounds(target.bounds, ref targetBoundSides);
         CalculateBounds(new Bounds(this.transform.position, cameraBoxSize), ref cameraBoundSides);
@@ -41,11 +42,13 @@ public class CameraController2D : MonoBehaviour
         if (targetBoundSides.up > cameraBoundSides.up)
         {
             transform.Translate(0, targetBoundSides.up - cameraBoundSides.up, 0);
-        }        
+        }
+        base.LateUpdate();
     }
 
     void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
         Gizmos.color = new Color(1, 0, 0, .5f);
         Gizmos.DrawCube(transform.position, cameraBoxSize);
     }
@@ -58,3 +61,17 @@ public class CameraController2D : MonoBehaviour
         boundSides.down = bounds.min.y;
     }
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(CameraController2D))]
+public class CameraControllerEditor: PixelPerfectCameraEditor
+{
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        CameraController2D controller = (CameraController2D)target;
+        controller.target = EditorGUILayout.ObjectField("Target to follow", controller.target,typeof(Collider2D)) as Collider2D;
+        controller.cameraBoxSize = EditorGUILayout.Vector2Field("Camera bounds size", controller.cameraBoxSize);
+    }
+}
+#endif

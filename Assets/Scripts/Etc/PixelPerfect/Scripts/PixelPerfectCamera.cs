@@ -33,7 +33,7 @@ public class PixelPerfectCamera : MonoBehaviour {
 		CalculatePixelPerfectPosition();
 	}
 	
-	void LateUpdate () {
+	public virtual void LateUpdate () {
 		CalculatePixelPerfectSize();
 		CalculatePixelPerfectPosition();
 	}
@@ -145,7 +145,7 @@ public class PixelPerfectCamera : MonoBehaviour {
 	}
 	
 	#if UNITY_EDITOR
-	void OnDrawGizmos() {
+	internal void OnDrawGizmos() {
 		if (showGizmos) {
 			for (int i = 0; i < parallaxLayerCount; i++) {
 				DrawRectFromParallaxIndex(i, 1);
