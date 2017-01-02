@@ -25,7 +25,17 @@ AnimationClip:
       value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     - time: .100000001
       value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - time: .13333334
+      value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - time: .166666672
+      value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     - time: .200000003
+      value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - time: .233333334
+      value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - time: .266666681
+      value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - time: .300000012
       value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     - time: .333333343
       value: {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
@@ -49,6 +59,11 @@ AnimationClip:
     pptrCurveMapping:
     - {fileID: 21300052, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     - {fileID: 21300054, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     - {fileID: 21300056, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
@@ -83,6 +98,13 @@ AnimationClip:
     floatParameter: 0
     intParameter: -1
     messageOptions: 0
+  - time: 0
+    functionName: SetActiveComboFlag
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: -1
+    messageOptions: 0
   - time: .0666666701
     functionName: InstantiateObject
     data: 
@@ -92,6 +114,13 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: .200000003
+    functionName: SetActiveComboFlag
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 1
+    messageOptions: 0
+  - time: .333333343
     functionName: SetReadHorizontalInputFlag
     data: 
     objectReferenceParameter: {fileID: 0}

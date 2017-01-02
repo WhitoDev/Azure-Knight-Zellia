@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cbe43f2f4e1549c43a2292107bfdfe71
-timeCreated: 1481736664
+timeCreated: 1483390541
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -314,7 +314,7 @@ TextureImporter:
         width: 88
         height: 82
       alignment: 9
-      pivot: {x: .670000017, y: .589999974}
+      pivot: {x: .680000007, y: .589999974}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Zellia_SS_23
       rect:

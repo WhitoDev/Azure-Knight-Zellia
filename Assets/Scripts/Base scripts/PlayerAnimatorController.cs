@@ -51,13 +51,15 @@ public class PlayerAnimatorController : AnimationController2D
         animator.SetBool("collidingUp", characterController.cs.collidingUp);
         animator.SetBool("collidingLeft", characterController.cs.collidingLeft);
         animator.SetBool("collidingRight", characterController.cs.collidingRight);
-        animator.SetBool("pressedAttackButton", playerController.flags.pressedAttackButton);
-        animator.SetBool("pressedJumpButton", playerController.flags.pressedJumpButton);
-        animator.SetBool("pressedDashButton", playerController.flags.pressedDashButton);
-        animator.SetBool("holdAttackButton", playerController.flags.holdAttackButton);
-        animator.SetBool("holdJumpButton", playerController.flags.holdJumpButton);
-        animator.SetBool("holdDashButton", playerController.flags.holdDashButton);
-        animator.SetBool("takingDamage", playerController.flags.takingDamage);        
+        animator.SetBool("pressedAttackButton", playerController.playerStatus.pressedAttackButton);
+        animator.SetBool("pressedJumpButton", playerController.playerStatus.pressedJumpButton);
+        animator.SetBool("pressedDashButton", playerController.playerStatus.pressedDashButton);
+        animator.SetBool("holdAttackButton", playerController.playerStatus.holdAttackButton);
+        animator.SetBool("holdJumpButton", playerController.playerStatus.holdJumpButton);
+        animator.SetBool("holdDashButton", playerController.playerStatus.holdDashButton);
+        animator.SetBool("takingDamage", playerController.playerStatus.takingDamage);
+        animator.SetBool("dynamodeActive", playerController.playerStatus.dynamodeActive);
+        animator.SetBool("canAttack", playerController.playerStatus.canAttack);
     }
 
     public void GetCurrentState()
@@ -69,12 +71,12 @@ public class PlayerAnimatorController : AnimationController2D
     private GameObject InstantiateObjectBase(GameObject obj)
     {
         var objPos = obj.transform.position;
-        var objPositionOffset = new Vector3(objPos.x * (playerController.flags.facingRight ? 1 : -1), objPos.y, objPos.z);
+        var objPositionOffset = new Vector3(objPos.x * (playerController.playerStatus.facingRight ? 1 : -1), objPos.y, objPos.z);
 
         Vector3 position = this.transform.position + objPositionOffset;
 
         var objLocalScale = obj.transform.localScale;
-        Vector3 localScale = new Vector3(objLocalScale.x * (playerController.flags.facingRight ? 1 : -1), objLocalScale.y, objLocalScale.z);
+        Vector3 localScale = new Vector3(objLocalScale.x * (playerController.playerStatus.facingRight ? 1 : -1), objLocalScale.y, objLocalScale.z);
 
         var newObj = Instantiate(obj, position, Quaternion.identity) as GameObject;
         newObj.transform.localScale = localScale;
@@ -96,12 +98,22 @@ public class PlayerAnimatorController : AnimationController2D
     public void SetReadHorizontalInputFlag(int value)
     {
         bool flag = value == -1 ? false : true;
-        playerController.flags.readHorizontalInput = flag;
+        playerController.playerStatus.readHorizontalInput = flag;
     }
 
     public void MakeASmallHop()
     {
         playerController.verticalVelocity = playerController.minJumpForce;
+    }
+
+    public void SetActiveComboFlag(int value)
+    {
+        bool flag = value == -1 ? false : true;
+
+        if (!playerController.playerStatus.dynamodeActive)
+        {
+            playerController.playerStatus.canAttack = flag;
+        }
     }
 }
 

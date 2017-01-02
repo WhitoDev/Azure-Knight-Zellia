@@ -127,7 +127,7 @@ public class AnimationController2DEditor : Editor
 
         foreach(AnimationEffect effect in myController.effects)
         {
-            effect.fold = EditorGUILayout.Foldout(effect.fold, effect.targetAnimationClip.name);
+            effect.fold = EditorGUILayout.Foldout(effect.fold, effect.targetAnimationClip.name + " // " + effect.methodName);
 
             if (effect.fold)
             {
