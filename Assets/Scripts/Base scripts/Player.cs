@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController2D))]
 public class Player : MonoBehaviour 
 {
-    private struct PlayerFlags
+    public struct PlayerFlags
     {
         public bool pressedAttackButton;
         public bool pressedJumpButton;
@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
         public bool holdJumpButton;
         public bool holdDashButton;
         public bool takingDamage;
+        public bool facingRight;
+        public bool readHorizontalInput;
         public int extraJumps;
 
         public void Reset()
@@ -32,8 +34,8 @@ public class Player : MonoBehaviour
     public bool jump;
 
     private CharacterController2D controller;
-    private Animator animator;
-    private PlayerFlags flags = new PlayerFlags();
+    private PlayerAnimatorController animationController;
+    public PlayerFlags flags = new PlayerFlags();
     public float moveSpeed = 10f;
     public float maxFallingSpeed = -20f;
 
@@ -41,23 +43,23 @@ public class Player : MonoBehaviour
     public float minJumpDistance = .5f;
     public float timeJumpApex = .5f;
         
-    private float gravity;
-    private float maxJumpForce;
-    private float minJumpForce;
+    public float gravity;
+    public float maxJumpForce;
+    public float minJumpForce;
     
-    private float verticalVelocity;
+    public float verticalVelocity;
 
     Vector2 inputVec;
-    Vector2 moveVec;
+    public Vector2 moveVec;
     Vector2 moveVecOld;
 
     void Start()
     {
         controller = GetComponent<CharacterController2D>();
-        animator = GetComponentInChildren<Animator>();
-        if (animator == null)
-            Debug.Log("Please set an animator controller to this gameobject!");
+        animationController = GetComponentInChildren<PlayerAnimatorController>();
         CalculateJumpForceAndGravity();
+
+        flags.readHorizontalInput = true;
     }
 
     void CalculateJumpForceAndGravity()
@@ -71,12 +73,12 @@ public class Player : MonoBehaviour
     {
         inputVec = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.A) || holdLeft)
+        if ((Input.GetKey(KeyCode.A) || holdLeft) && flags.readHorizontalInput)
         {
-            inputVec.x += -1;            
+            inputVec.x += -1;
         }
 
-        if (Input.GetKey(KeyCode.D) || holdRight)
+        if ((Input.GetKey(KeyCode.D) || holdRight) && flags.readHorizontalInput)
         {
             inputVec.x += 1;
         }
@@ -99,6 +101,17 @@ public class Player : MonoBehaviour
             flags.pressedAttackButton = true;
         }
 
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            if(GameManager.gamePaused)
+            {
+                GameManager.UnpauseGame();
+            }
+            else
+            {
+                GameManager.PauseGame();
+            }
+        }
 
     }
 
@@ -108,6 +121,8 @@ public class Player : MonoBehaviour
         {
             this.transform.localScale = new Vector3(Mathf.Abs(this.transform.localScale.x) * Mathf.Sign(moveVec.x), this.transform.localScale.y, this.transform.localScale.z);
         }
+
+        flags.facingRight = Mathf.Sign(this.transform.localScale.x) == 1 ? true : false;
     }
 
     void InputToVelocity()
@@ -122,44 +137,34 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        ReadInput();        
-        InputToVelocity();
-        SetSpriteDirecction();
-        controller.Move(ref moveVec);
-
-        verticalVelocity += gravity * Time.deltaTime;
-        if(controller.cs.collidingUp)
-            verticalVelocity = gravity * Time.deltaTime;
-        verticalVelocity = Mathf.Max(verticalVelocity, maxFallingSpeed);
-
-        CalculateJumpForceAndGravity();
-        SetAnimationParameters();
-
-        if(controller.cs.collidingDown)
+        animationController.GetCurrentState();
+        ReadInput();
+        if (!GameManager.gamePaused)
         {
-            flags.extraJumps = 1;
-            verticalVelocity = 0;
+            InputToVelocity();
+            SetSpriteDirecction();
+            controller.Move(ref moveVec);
+
+            verticalVelocity += gravity * Time.deltaTime;
+            if (controller.cs.collidingUp)
+                verticalVelocity = gravity * Time.deltaTime;
+            verticalVelocity = Mathf.Max(verticalVelocity, maxFallingSpeed);
+
+            CalculateJumpForceAndGravity();
+
+            animationController.SetAnimationParameters();
+
+            if (controller.cs.collidingDown)
+            {
+                flags.extraJumps = 1;
+                verticalVelocity = 0;
+            }
+
+            flags.Reset();
+
+            moveVecOld = moveVec;
         }
-
-        flags.Reset();
-
-        moveVecOld = moveVec;
     }
 
-    void SetAnimationParameters()
-    {
-        animator.SetFloat("velocityX", Mathf.Abs(moveVec.x));
-        animator.SetFloat("velocityY", moveVec.y);
-        animator.SetBool("collidingDown", controller.cs.collidingDown);
-        animator.SetBool("collidingUp", controller.cs.collidingUp);
-        animator.SetBool("collidingLeft", controller.cs.collidingLeft);
-        animator.SetBool("collidingRight", controller.cs.collidingRight);
-        animator.SetBool("pressedAttackButton", flags.pressedAttackButton);
-        animator.SetBool("pressedJumpButton", flags.pressedJumpButton);
-        animator.SetBool("pressedDashButton", flags.pressedDashButton);
-        animator.SetBool("holdAttackButton", flags.holdAttackButton);
-        animator.SetBool("holdJumpButton", flags.holdJumpButton);
-        animator.SetBool("holdDashButton", flags.holdDashButton);
-        animator.SetBool("takingDamage", flags.takingDamage);
-    }
+    
 }

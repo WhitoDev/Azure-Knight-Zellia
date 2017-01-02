@@ -1,15 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour 
+{
+    private static float timeScaleNormal;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public static bool gamePaused;
+
+    void Start()
+    {
+        timeScaleNormal = Time.timeScale;
+    }
+
+    public static void PauseGame()
+    {
+        Time.timeScale = 0;
+        gamePaused = true;
+    }
+
+    public static void UnpauseGame()
+    {
+        Time.timeScale = timeScaleNormal;
+        gamePaused = false;
+    }
 }
