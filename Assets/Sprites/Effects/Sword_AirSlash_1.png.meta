@@ -1,9 +1,14 @@
 fileFormatVersion: 2
 guid: a4257ccf2de627748a66f1b2f09c5109
-timeCreated: 1481832832
+timeCreated: 1482528409
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: Sword_AirSlash_1_0
+    21300002: Sword_AirSlash_1_1
+    21300004: Sword_AirSlash_1_2
+    21300006: Sword_AirSlash_1_3
+    21300008: Sword_AirSlash_1_4
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -48,7 +53,57 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: Sword_AirSlash_1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 520
+        width: 180
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Sword_AirSlash_1_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 390
+        width: 180
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Sword_AirSlash_1_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 260
+        width: 180
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Sword_AirSlash_1_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 130
+        width: 180
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Sword_AirSlash_1_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 180
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 

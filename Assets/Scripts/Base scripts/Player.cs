@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
         public bool holdDashButton;
         public bool takingDamage;
         public bool facingRight;
+        public bool readHorizontalInput;
         public int extraJumps;
 
         public void Reset()
@@ -42,11 +43,11 @@ public class Player : MonoBehaviour
     public float minJumpDistance = .5f;
     public float timeJumpApex = .5f;
         
-    private float gravity;
-    private float maxJumpForce;
-    private float minJumpForce;
+    public float gravity;
+    public float maxJumpForce;
+    public float minJumpForce;
     
-    private float verticalVelocity;
+    public float verticalVelocity;
 
     Vector2 inputVec;
     public Vector2 moveVec;
@@ -57,6 +58,8 @@ public class Player : MonoBehaviour
         controller = GetComponent<CharacterController2D>();
         animationController = GetComponentInChildren<PlayerAnimatorController>();
         CalculateJumpForceAndGravity();
+
+        flags.readHorizontalInput = true;
     }
 
     void CalculateJumpForceAndGravity()
@@ -70,16 +73,14 @@ public class Player : MonoBehaviour
     {
         inputVec = Vector2.zero;
 
-        if (Input.GetKey(KeyCode.A) || holdLeft)
+        if ((Input.GetKey(KeyCode.A) || holdLeft) && flags.readHorizontalInput)
         {
             inputVec.x += -1;
-            flags.facingRight = false;
         }
 
-        if (Input.GetKey(KeyCode.D) || holdRight)
+        if ((Input.GetKey(KeyCode.D) || holdRight) && flags.readHorizontalInput)
         {
             inputVec.x += 1;
-            flags.facingRight = true;
         }
 
         if ((Input.GetKeyDown(KeyCode.Space) || jump) && (controller.cs.collidingDown || flags.extraJumps > 0) && ! controller.cs.collidingUp)
@@ -118,8 +119,10 @@ public class Player : MonoBehaviour
     {
         if(moveVec.x != 0)
         {
-            this.transform.localScale = new Vector3(Mathf.Abs(this.transform.localScale.x) * (flags.facingRight ? 1 : -1), this.transform.localScale.y, this.transform.localScale.z);
+            this.transform.localScale = new Vector3(Mathf.Abs(this.transform.localScale.x) * Mathf.Sign(moveVec.x), this.transform.localScale.y, this.transform.localScale.z);
         }
+
+        flags.facingRight = Mathf.Sign(this.transform.localScale.x) == 1 ? true : false;
     }
 
     void InputToVelocity()

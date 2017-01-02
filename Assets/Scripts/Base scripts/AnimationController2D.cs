@@ -30,27 +30,51 @@ public class AnimationController2D : MonoBehaviour
             List<AnimationEvent> newEvents = new List<AnimationEvent>();
             foreach (AnimationEffect effect in e)
             {
-                var length = effect.targetAnimationClip.length;
-                var framerate = effect.targetAnimationClip.frameRate;
-                var offset = 1 / framerate;
+                var curveBindings = AnimationUtility.GetObjectReferenceCurveBindings(effect.targetAnimationClip);
+                var spriteCurveBinding = curveBindings.First(c => c.type == typeof(SpriteRenderer));
 
-                var frameToPlayIn = Mathf.Clamp((effect.frameToPlayIn - 1), 0, effect.totalFramesInAnimation+1);
+                if(spriteCurveBinding != null)
+                {
+                    var keyframes = AnimationUtility.GetObjectReferenceCurve(effect.targetAnimationClip, spriteCurveBinding);
+                    if (keyframes != null && keyframes.Length > 1)
+                    {
+                        int keyframeToPlayAt = Mathf.Clamp(effect.frameToPlayIn - 1, 0, keyframes.Length - 1);
 
-                float trueLenght = length - offset;
-                float keyframeTime = trueLenght / (effect.totalFramesInAnimation - 1);
+                        float keyframeTime = keyframes[keyframeToPlayAt].time;
+                        
+                        if (effect.frameToPlayIn > keyframes.Length)
+                            keyframeTime = effect.targetAnimationClip.length;
 
-                var evnt = new AnimationEvent();
-                evnt.time = Mathf.Clamp(keyframeTime * frameToPlayIn, 0, length);
+                        var evnt = new AnimationEvent();
+                        evnt.time = keyframeTime;
 
-                if(effect.prefab != null)
-                    evnt.objectReferenceParameter = effect.prefab;
+                        switch(effect.selectedParameterType)
+                        {
+                            case AnimationEffect.parameterType.OBJECT:
+                                if (effect.objectValue != null)
+                                    evnt.objectReferenceParameter = effect.objectValue;
+                                break;
 
-                if (!String.IsNullOrEmpty(effect.methodName))
-                    evnt.functionName = effect.methodName;
+                            case AnimationEffect.parameterType.BOOLEAN:
+                                evnt.intParameter = effect.booleanValue;
+                                break;
 
-                newEvents.Add(evnt);
+                            case AnimationEffect.parameterType.FLOAT:
+                                evnt.floatParameter = effect.floatValue;
+                                break;
+                        }                        
+
+                        if (!String.IsNullOrEmpty(effect.methodName))
+                            evnt.functionName = effect.methodName;
+
+                        newEvents.Add(evnt);
+                    }
+                }
             }
-            AnimationUtility.SetAnimationEvents(e.First().targetAnimationClip, newEvents.ToArray());
+
+            newEvents = newEvents.OrderBy(c => c.time).ToList();
+
+            AnimationUtility.SetAnimationEvents(e.First().targetAnimationClip, newEvents.ToArray());            
         }
     }
 
@@ -103,54 +127,77 @@ public class AnimationController2DEditor : Editor
 
         foreach(AnimationEffect effect in myController.effects)
         {
-            var prefab = EditorGUILayout.ObjectField(effect.prefab, typeof(GameObject)) as GameObject;
-            
-            effect.prefab = prefab;
-            if (effect.targetAnimationClip != null)
+            effect.fold = EditorGUILayout.Foldout(effect.fold, effect.targetAnimationClip.name);
+
+            if (effect.fold)
             {
-                int index = animationClips.FindIndex(c => c.name == effect.targetAnimationClip.name);                
-                var selectedClipIndex = EditorGUILayout.Popup(index, animationClipsNames);
-                if (animationClips[selectedClipIndex] != effect.targetAnimationClip)
+                effect.selectedParameterType = (AnimationEffect.parameterType)EditorGUILayout.EnumPopup("Parameter type", effect.selectedParameterType);
+
+                switch(effect.selectedParameterType)
                 {
-                    effect.targetAnimationClip = animationClips[selectedClipIndex];
+                    case AnimationEffect.parameterType.OBJECT:
+                        var prefab = EditorGUILayout.ObjectField(effect.objectValue, typeof(GameObject)) as GameObject;
+                        effect.objectValue = prefab;
+                        break;
+
+                    case AnimationEffect.parameterType.BOOLEAN:
+                        var boolValue = EditorGUILayout.Toggle(effect.booleanValue == -1 ? false : true) == true ? 1 : -1;
+                        effect.booleanValue = boolValue;
+                        break;
+
+                    case AnimationEffect.parameterType.FLOAT:
+                        var floatValue = EditorGUILayout.FloatField(effect.floatValue);
+                        effect.floatValue = floatValue;
+                        break;
+                }                
+
+                if (effect.targetAnimationClip != null)
+                {
+                    int index = animationClips.FindIndex(c => c.name == effect.targetAnimationClip.name);
+                    var selectedClipIndex = EditorGUILayout.Popup(index, animationClipsNames);
+                    if (animationClips[selectedClipIndex] != effect.targetAnimationClip)
+                    {
+                        effect.targetAnimationClip = animationClips[selectedClipIndex];
+                        return;
+                    }
+
+                    int methodNameIndex = !String.IsNullOrEmpty(effect.methodName) ? methodsNames.FindIndex(m => m == effect.methodName) : 0;
+                    var selectedMethodIndex = EditorGUILayout.Popup(methodNameIndex, methodsNames.ToArray());
+                    if (methodsNames[selectedMethodIndex] != effect.methodName)
+                    {
+                        effect.methodName = methodsNames[selectedMethodIndex];
+                        return;
+                    }
+
+                }
+                else
+                {
+                    effect.targetAnimationClip = animationClips.FirstOrDefault();
                     return;
                 }
 
-                int methodNameIndex = !String.IsNullOrEmpty(effect.methodName) ? methodsNames.FindIndex(m => m == effect.methodName) : 0;
-                var selectedMethodIndex = EditorGUILayout.Popup(methodNameIndex, methodsNames.ToArray());
-                if (methodsNames[selectedMethodIndex] != effect.methodName)
+
+                var frameToPlayIn = EditorGUILayout.IntField("Frame to play in", effect.frameToPlayIn);
+
+                effect.frameToPlayIn = frameToPlayIn;
+
+                if (GUILayout.Button("Remove"))
                 {
-                    effect.methodName = methodsNames[selectedMethodIndex];
+                    myController.effects.Remove(effect);
                     return;
                 }
-
+                GUILayout.Space(5);
             }
-            else
-            {
-                effect.targetAnimationClip = animationClips.FirstOrDefault();
-                return;
-            }
-
-
-            var frameToPlayIn = EditorGUILayout.IntField("Frame to play in", effect.frameToPlayIn);
-            var totalFramesInAnimation = EditorGUILayout.IntField("Number of frames on this animation", effect.totalFramesInAnimation);
-
-            effect.frameToPlayIn = frameToPlayIn;
-            effect.totalFramesInAnimation = totalFramesInAnimation;
-
-            if (GUILayout.Button("Remove"))
-            {
-                myController.effects.Remove(effect);
-                return;
-            }
-            GUILayout.Space(5);
         }
 
         EditorGUILayout.BeginHorizontal();
 
         if(GUILayout.Button("Add effect"))
         {
-            myController.effects.Add(new AnimationEffect() { targetAnimationClip = animationClips.FirstOrDefault(), methodName = methodsNames.FirstOrDefault()});
+            myController.effects.Add(new AnimationEffect() { 
+                targetAnimationClip = animationClips.FirstOrDefault(), 
+                methodName = methodsNames.FirstOrDefault(), 
+                selectedParameterType = AnimationEffect.parameterType.OBJECT});
         }
 
         if(GUILayout.Button("Set animation effects"))

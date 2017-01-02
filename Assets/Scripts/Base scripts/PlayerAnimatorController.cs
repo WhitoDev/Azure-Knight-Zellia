@@ -66,7 +66,7 @@ public class PlayerAnimatorController : AnimationController2D
         hs_Current = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
     }
 
-    public void InstantiateObject(GameObject obj)
+    private GameObject InstantiateObjectBase(GameObject obj)
     {
         var objPos = obj.transform.position;
         var objPositionOffset = new Vector3(objPos.x * (playerController.flags.facingRight ? 1 : -1), objPos.y, objPos.z);
@@ -78,6 +78,30 @@ public class PlayerAnimatorController : AnimationController2D
 
         var newObj = Instantiate(obj, position, Quaternion.identity) as GameObject;
         newObj.transform.localScale = localScale;
+
+        return newObj;
+    }
+
+    public void InstantiateObject(GameObject obj)
+    {
+        InstantiateObjectBase(obj);        
+    }
+
+    public void InstantiateObjectAsChild(GameObject obj)
+    {
+        var newObj = InstantiateObjectBase(obj);
+        newObj.transform.parent = this.transform.parent;
+    }
+
+    public void SetReadHorizontalInputFlag(int value)
+    {
+        bool flag = value == -1 ? false : true;
+        playerController.flags.readHorizontalInput = flag;
+    }
+
+    public void MakeASmallHop()
+    {
+        playerController.verticalVelocity = playerController.minJumpForce;
     }
 }
 
