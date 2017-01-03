@@ -9,18 +9,24 @@ public class PlayerAnimatorController : AnimationController2D
     private Player playerController;
     private CharacterController2D characterController;
 
-    #region Animations Hashes
-    int hs_Current;
-    int hs_Last;
+    #region Animation hashes
+    public struct AnimationHashes
+    {
+        public int hs_Current;
+        public int hs_Last;
 
-    int hs_Airborne_Attack;
-    int hs_Airborne_Down;
-    int hs_Airborne_Up;
-    int hs_Damaged;
-    int hs_Grounded_Slash_1;
-    int hs_Grounded_Slash_2;
-    int hs_Idle;
-    int hs_Run;
+        public int hs_Airborne_Attack;
+        public int hs_Airborne_Down;
+        public int hs_Airborne_Up;
+        public int hs_Damaged;
+        public int hs_Grounded_Slash_1;
+        public int hs_Grounded_Slash_2;
+        public int hs_Idle;
+        public int hs_Run;
+        public int hs_Dash;
+    }
+
+    public AnimationHashes animationHashes = new AnimationHashes();
     #endregion
 
     void Start()
@@ -33,14 +39,15 @@ public class PlayerAnimatorController : AnimationController2D
 
     void HashAnimations()
     {
-        hs_Airborne_Attack = Animator.StringToHash("Base Layer.Airborne.Airborne_Attack");
-        hs_Airborne_Down = Animator.StringToHash("Base Layer.Airborne.Airborne_Down");
-        hs_Airborne_Up = Animator.StringToHash("Base Layer.Airborne.Airborne_Up");
-        hs_Damaged = Animator.StringToHash("Base Layer.Damaged");
-        hs_Grounded_Slash_1 = Animator.StringToHash("Base Layer.Grounded.Grounded_Slash_1");
-        hs_Grounded_Slash_2 = Animator.StringToHash("Base Layer.Grounded.Grounded_Slash_2");
-        hs_Idle = Animator.StringToHash("Base Layer.Grounded.Idle");
-        hs_Run = Animator.StringToHash("Base Layer.Grounded.Run");
+        animationHashes.hs_Airborne_Attack = Animator.StringToHash("Base Layer.Airborne.Airborne_Attack");
+        animationHashes.hs_Airborne_Down = Animator.StringToHash("Base Layer.Airborne.Airborne_Down");
+        animationHashes.hs_Airborne_Up = Animator.StringToHash("Base Layer.Airborne.Airborne_Up");
+        animationHashes.hs_Damaged = Animator.StringToHash("Base Layer.Damaged");
+        animationHashes.hs_Grounded_Slash_1 = Animator.StringToHash("Base Layer.Grounded.Grounded_Slash_1");
+        animationHashes.hs_Grounded_Slash_2 = Animator.StringToHash("Base Layer.Grounded.Grounded_Slash_2");
+        animationHashes.hs_Idle = Animator.StringToHash("Base Layer.Grounded.Idle");
+        animationHashes.hs_Run = Animator.StringToHash("Base Layer.Grounded.Run");
+        animationHashes.hs_Dash = Animator.StringToHash("Base Layer.Dash");
     }
 
     public void SetAnimationParameters()
@@ -51,30 +58,32 @@ public class PlayerAnimatorController : AnimationController2D
         animator.SetBool("collidingUp", characterController.cs.collidingUp);
         animator.SetBool("collidingLeft", characterController.cs.collidingLeft);
         animator.SetBool("collidingRight", characterController.cs.collidingRight);
-        animator.SetBool("pressedAttackButton", playerController.flags.pressedAttackButton);
-        animator.SetBool("pressedJumpButton", playerController.flags.pressedJumpButton);
-        animator.SetBool("pressedDashButton", playerController.flags.pressedDashButton);
-        animator.SetBool("holdAttackButton", playerController.flags.holdAttackButton);
-        animator.SetBool("holdJumpButton", playerController.flags.holdJumpButton);
-        animator.SetBool("holdDashButton", playerController.flags.holdDashButton);
-        animator.SetBool("takingDamage", playerController.flags.takingDamage);        
+        animator.SetBool("pressedAttackButton", playerController.playerStatus.pressedAttackButton);
+        animator.SetBool("pressedJumpButton", playerController.playerStatus.pressedJumpButton);
+        animator.SetBool("pressedDashButton", playerController.playerStatus.pressedDashButton);
+        animator.SetBool("holdAttackButton", playerController.playerStatus.holdAttackButton);
+        animator.SetBool("holdJumpButton", playerController.playerStatus.holdJumpButton);
+        animator.SetBool("holdDashButton", playerController.playerStatus.holdDashButton);
+        animator.SetBool("takingDamage", playerController.playerStatus.takingDamage);
+        animator.SetBool("dynamodeActive", playerController.playerStatus.dynamodeActive);
+        animator.SetBool("canAttack", playerController.playerStatus.canAttack);
     }
 
     public void GetCurrentState()
     {
-        hs_Last = hs_Current;
-        hs_Current = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
+        animationHashes.hs_Last = animationHashes.hs_Current;
+        animationHashes.hs_Current = animator.GetCurrentAnimatorStateInfo(0).fullPathHash;
     }
 
     private GameObject InstantiateObjectBase(GameObject obj)
     {
         var objPos = obj.transform.position;
-        var objPositionOffset = new Vector3(objPos.x * (playerController.flags.facingRight ? 1 : -1), objPos.y, objPos.z);
+        var objPositionOffset = new Vector3(objPos.x * (playerController.playerStatus.facingRight ? 1 : -1), objPos.y, objPos.z);
 
         Vector3 position = this.transform.position + objPositionOffset;
 
         var objLocalScale = obj.transform.localScale;
-        Vector3 localScale = new Vector3(objLocalScale.x * (playerController.flags.facingRight ? 1 : -1), objLocalScale.y, objLocalScale.z);
+        Vector3 localScale = new Vector3(objLocalScale.x * (playerController.playerStatus.facingRight ? 1 : -1), objLocalScale.y, objLocalScale.z);
 
         var newObj = Instantiate(obj, position, Quaternion.identity) as GameObject;
         newObj.transform.localScale = localScale;
@@ -96,12 +105,22 @@ public class PlayerAnimatorController : AnimationController2D
     public void SetReadHorizontalInputFlag(int value)
     {
         bool flag = value == -1 ? false : true;
-        playerController.flags.readHorizontalInput = flag;
+        playerController.playerStatus.readHorizontalInput = flag;
     }
 
     public void MakeASmallHop()
     {
         playerController.verticalVelocity = playerController.minJumpForce;
+    }
+
+    public void SetActiveComboFlag(int value)
+    {
+        bool flag = value == -1 ? false : true;
+
+        if (!playerController.playerStatus.dynamodeActive)
+        {
+            playerController.playerStatus.canAttack = flag;
+        }
     }
 }
 

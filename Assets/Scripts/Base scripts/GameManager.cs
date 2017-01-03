@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     private static float timeScaleNormal;
 
     public static bool gamePaused;
+    public static GameObject AfterImage;
 
     void Start()
     {
