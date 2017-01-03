@@ -18,7 +18,7 @@ public class RayCaster : MonoBehaviour
     internal float skinWidth = .015f;
     public LayerMask collisionMask;
     public List<string> ignoreColliderWithTag;
-    internal const int rayAmount = 5;
+    public int rayAmount = 5;
     internal float horizontalRaySpacing;
     internal float verticalRaySpacing;
 

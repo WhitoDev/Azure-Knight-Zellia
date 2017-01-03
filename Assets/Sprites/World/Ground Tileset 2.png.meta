@@ -1,17 +1,19 @@
 fileFormatVersion: 2
-guid: d4015dc5ddd300e49b3e1642e2cd4fa8
-timeCreated: 1483476949
+guid: 77fe0132725a68242b8ab0fca3c1d9ed
+timeCreated: 1483477920
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: ground_0
-    21300002: ground_1
-    21300004: ground_2
-    21300006: ground_3
+    21300000: Ground Tileset 2_0
+    21300002: Ground Tileset 2_1
+    21300004: Ground Tileset 2_2
+    21300006: Ground Tileset 2_3
+    21300008: Ground Tileset 2_4
+    21300010: Ground Tileset 2_5
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -30,7 +32,7 @@ TextureImporter:
   cubemapConvolutionSteps: 8
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
-  textureFormat: -3
+  textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
     filterMode: 0
@@ -53,42 +55,62 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: ground_0
+    - name: Ground Tileset 2_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 60
-        width: 33
+        y: 392
+        width: 132
+        height: 120
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Ground Tileset 2_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 264
+        height: 120
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Ground Tileset 2_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 124
+        width: 495
+        height: 120
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Ground Tileset 2_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 452
+        width: 132
         height: 60
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: ground_1
+    - name: Ground Tileset 2_4
       rect:
         serializedVersion: 2
-        x: 33
-        y: 60
-        width: 33
-        height: 60
+        x: 315
+        y: 392
+        width: 197
+        height: 120
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: ground_2
+    - name: Ground Tileset 2_5
       rect:
         serializedVersion: 2
-        x: 1
-        y: 0
-        width: 33
-        height: 60
-      alignment: 0
-      pivot: {x: .5, y: .5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-    - name: ground_3
-      rect:
-        serializedVersion: 2
-        x: 33
-        y: 0
-        width: 33
+        x: 314
+        y: 452
+        width: 198
         height: 60
       alignment: 0
       pivot: {x: .5, y: .5}

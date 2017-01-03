@@ -106,7 +106,10 @@ public class CharacterController2D : RayCaster
             Debug.DrawRay(rayOrigin + Vector2.up * i * verticalRaySpacing, Vector2.right * directionX * rayLength, Color.yellow);
             if(hit)
             {
-                if (ignoreColliderWithTag.Contains(hit.transform.tag) && hit.distance == 0)
+                //if (ignoreColliderWithTag.Contains(hit.transform.tag) && hit.distance == 0)
+                //    continue;
+
+                if (ignoreColliderWithTag.Contains(hit.transform.tag))
                     continue;
 
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
@@ -198,7 +201,7 @@ public class CharacterController2D : RayCaster
             Debug.DrawRay(rayOrigin + offset + Vector2.right * i * horizontalRaySpacing * spacingDirection, Vector2.up * directionY * rayLength, Color.yellow);
             if(hit)
             {
-                if (ignoreColliderWithTag.Contains(hit.transform.tag) && directionY == 1)
+                if (ignoreColliderWithTag.Contains(hit.transform.tag) && (directionY == 1 || hit.distance == 0))
                     continue;
 
                 float angle = Vector2.Angle(hit.normal, Vector2.up);

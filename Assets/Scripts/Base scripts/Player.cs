@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
     public bool holdLeft;
     public bool jump;
 
+    public GameObject AfterImagePrefab;
+
     private CharacterController2D controller;
     private PlayerAnimatorController animationController;
     public PlayerFlags playerStatus = new PlayerFlags();
@@ -46,7 +48,11 @@ public class Player : MonoBehaviour
     public float maxJumpDistance = 4f;
     public float minJumpDistance = .5f;
     public float timeJumpApex = .5f;
-        
+
+    private float dashForce;
+    public float dashTimeLenght = 1f;
+    public float dashMaxDistance = 4f;
+
     public float gravity;
     public float maxJumpForce;
     public float minJumpForce;
@@ -62,6 +68,7 @@ public class Player : MonoBehaviour
         controller = GetComponent<CharacterController2D>();
         animationController = GetComponentInChildren<PlayerAnimatorController>();
         CalculateJumpForceAndGravity();
+        CalculateDashForce();
 
         playerStatus.readHorizontalInput = true;
         playerStatus.canAttack = true;
@@ -72,6 +79,11 @@ public class Player : MonoBehaviour
         gravity = -(2 * maxJumpDistance) / Mathf.Pow(timeJumpApex, 2);
         maxJumpForce = Mathf.Abs(gravity) * timeJumpApex;
         minJumpForce = Mathf.Sqrt(2 * Mathf.Abs(gravity) * minJumpDistance);
+    }
+
+    void CalculateDashForce()
+    {
+        dashForce = (dashMaxDistance / dashTimeLenght);
     }
 
     void ReadInput()
@@ -106,6 +118,16 @@ public class Player : MonoBehaviour
             playerStatus.pressedAttackButton = true;
         }
 
+        if(Input.GetKeyDown(KeyCode.Z))
+        {
+            playerStatus.pressedDashButton = true;
+        }
+
+        if(Input.GetKey(KeyCode.Z))
+        {
+            playerStatus.holdDashButton = true;
+        }
+
         if(Input.GetKeyDown(KeyCode.P))
         {
             if(GameManager.gamePaused)
@@ -134,8 +156,23 @@ public class Player : MonoBehaviour
     {
         moveVec = Vector2.zero;
 
-        moveVec.x = inputVec.x * moveSpeed;
-        moveVec.y = verticalVelocity;
+        float currentMoveSpeed;
+
+        animationController.GetCurrentState();
+        if (animationController.animationHashes.hs_Current == animationController.animationHashes.hs_Dash)
+        {
+            currentMoveSpeed = dashForce;
+            moveVec.x = Mathf.Sign(transform.localScale.x) * currentMoveSpeed;
+            if(controller.cs.collidingDown || !controller.cs.collidingDown && !playerStatus.dynamodeActive)
+                moveVec.y = verticalVelocity;
+        }
+        else
+        {
+            currentMoveSpeed = moveSpeed;
+            moveVec.x = inputVec.x * currentMoveSpeed;
+            moveVec.y = verticalVelocity;
+        }
+        
 
         moveVec = moveVec * Time.deltaTime;
     }
@@ -143,6 +180,15 @@ public class Player : MonoBehaviour
     public void ToggleDynamode()
     {
         playerStatus.dynamodeActive = !playerStatus.dynamodeActive;
+
+        if(playerStatus.dynamodeActive)
+        {
+            StartCoroutine(RunAfterImage(.08f));
+        }
+        else
+        {
+            StopAllCoroutines();
+        }
     }
 
     void HandleInputBuffer()
@@ -156,6 +202,19 @@ public class Player : MonoBehaviour
         }
     }
 
+    IEnumerator RunAfterImage(float interval)
+    {
+        while(true)
+        {
+            var obj = Instantiate(AfterImagePrefab, AfterImagePrefab.transform.position + this.transform.position, Quaternion.identity) as GameObject;
+            obj.transform.localScale = new Vector3(obj.transform.localScale.x * Mathf.Sign(transform.localScale.x), obj.transform.localScale.y, obj.transform.localScale.z);
+            var spriteRenderer = obj.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = GetComponentInChildren<SpriteRenderer>().sprite;
+            Destroy(obj, obj.GetComponent<Animator>().runtimeAnimatorController.animationClips[0].length);
+            yield return new WaitForSeconds(interval);
+        }
+    }
+
     void Update()
     {
         animationController.GetCurrentState();
@@ -166,12 +225,16 @@ public class Player : MonoBehaviour
             SetSpriteDirecction();
             controller.Move(ref moveVec);
 
-            verticalVelocity += gravity * Time.deltaTime;
-            if (controller.cs.collidingUp)
-                verticalVelocity = gravity * Time.deltaTime;
-            verticalVelocity = Mathf.Max(verticalVelocity, maxFallingSpeed);
+            if (!playerStatus.dynamodeActive || controller.cs.collidingDown || (!controller.cs.collidingDown && animationController.animationHashes.hs_Current != animationController.animationHashes.hs_Dash))
+            {
+                verticalVelocity += gravity * Time.deltaTime;
+                if (controller.cs.collidingUp)
+                    verticalVelocity = gravity * Time.deltaTime;
+                verticalVelocity = Mathf.Max(verticalVelocity, maxFallingSpeed);
+            }
 
             CalculateJumpForceAndGravity();
+            CalculateDashForce();
 
             animationController.SetAnimationParameters();
 
