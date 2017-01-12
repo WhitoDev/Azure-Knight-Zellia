@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
         public bool facingRight;
         public bool readHorizontalInput;
         public int extraJumps;
+        public int airDashes;
 
         public void Reset()
         {
@@ -38,6 +39,7 @@ public class Player : MonoBehaviour
 
     public GameObject AfterImagePrefab;
 
+    private Coroutine AfterImageCorutine;
     private CharacterController2D controller;
     private PlayerAnimatorController animationController;
     public PlayerFlags playerStatus = new PlayerFlags();
@@ -118,9 +120,12 @@ public class Player : MonoBehaviour
             playerStatus.pressedAttackButton = true;
         }
 
-        if(Input.GetKeyDown(KeyCode.Z))
-        {
+        if(Input.GetKeyDown(KeyCode.Z) && (controller.cs.collidingDown || playerStatus.airDashes > 0))
+        {            
             playerStatus.pressedDashButton = true;
+
+            if (!controller.cs.collidingDown && playerStatus.dynamodeActive)
+                playerStatus.airDashes--;
         }
 
         if(Input.GetKey(KeyCode.Z))
@@ -128,15 +133,25 @@ public class Player : MonoBehaviour
             playerStatus.holdDashButton = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            ToggleDynamode();
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            GameManager.instance.SleepGame(.02f, true);
+        }
+
         if(Input.GetKeyDown(KeyCode.P))
         {
-            if(GameManager.gamePaused)
+            if(GameManager.instance.gamePaused)
             {
-                GameManager.UnpauseGame();
+                GameManager.instance.UnpauseGame();
             }
             else
             {
-                GameManager.PauseGame();
+                GameManager.instance.PauseGame();
             }
         }
 
@@ -159,20 +174,23 @@ public class Player : MonoBehaviour
         float currentMoveSpeed;
 
         animationController.GetCurrentState();
-        if (animationController.animationHashes.hs_Current == animationController.animationHashes.hs_Dash)
+        if (animationController.animationHashes.hs_Current == animationController.animationHashes.hs_Dash || animationController.animationHashes.hs_Current == animationController.animationHashes.hs_Air_Dash)
         {
             currentMoveSpeed = dashForce;
-            moveVec.x = Mathf.Sign(transform.localScale.x) * currentMoveSpeed;
-            if(controller.cs.collidingDown || !controller.cs.collidingDown && !playerStatus.dynamodeActive)
-                moveVec.y = verticalVelocity;
+            moveVec.x = (inputVec.x == 0 ? Mathf.Sign(transform.localScale.x) : inputVec.x) * currentMoveSpeed;            
         }
         else
         {
             currentMoveSpeed = moveSpeed;
-            moveVec.x = inputVec.x * currentMoveSpeed;
-            moveVec.y = verticalVelocity;
+            moveVec.x = inputVec.x * currentMoveSpeed;            
         }
-        
+
+        if (animationController.animationHashes.hs_Current == animationController.animationHashes.hs_Air_Dash)
+        {
+            verticalVelocity = 0;
+        }
+
+        moveVec.y = verticalVelocity;
 
         moveVec = moveVec * Time.deltaTime;
     }
@@ -181,14 +199,27 @@ public class Player : MonoBehaviour
     {
         playerStatus.dynamodeActive = !playerStatus.dynamodeActive;
 
+        if(AfterImageCorutine != null)
+        {
+            StopCoroutine(AfterImageCorutine);
+            AfterImageCorutine = null;
+        }
+
         if(playerStatus.dynamodeActive)
         {
-            StartCoroutine(RunAfterImage(.08f));
+            AfterImageCorutine = StartCoroutine(RunAfterImage(.02f));
         }
-        else
-        {
-            StopAllCoroutines();
-        }
+    }
+
+    public void StartAfterImage(float seconds)
+    {
+        AfterImageCorutine = StartCoroutine(RunAfterImage(seconds));
+    }
+
+    public void StopAfterImage()
+    {
+        StopCoroutine(AfterImageCorutine);
+        AfterImageCorutine = null;
     }
 
     void HandleInputBuffer()
@@ -206,26 +237,34 @@ public class Player : MonoBehaviour
     {
         while(true)
         {
+            yield return new WaitForSeconds(interval);
             var obj = Instantiate(AfterImagePrefab, AfterImagePrefab.transform.position + this.transform.position, Quaternion.identity) as GameObject;
             obj.transform.localScale = new Vector3(obj.transform.localScale.x * Mathf.Sign(transform.localScale.x), obj.transform.localScale.y, obj.transform.localScale.z);
             var spriteRenderer = obj.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = GetComponentInChildren<SpriteRenderer>().sprite;
-            Destroy(obj, obj.GetComponent<Animator>().runtimeAnimatorController.animationClips[0].length);
-            yield return new WaitForSeconds(interval);
+            Destroy(obj, obj.GetComponent<Animator>().runtimeAnimatorController.animationClips[0].length);            
         }
     }
 
     void Update()
     {
         animationController.GetCurrentState();
+
+        if (animationController.animationHashes.hs_Current != animationController.animationHashes.hs_Last 
+            && (animationController.animationHashes.hs_Last == animationController.animationHashes.hs_Dash || animationController.animationHashes.hs_Last == animationController.animationHashes.hs_Air_Dash) 
+            && AfterImageCorutine != null)
+        {
+            StopAfterImage();
+        }
+
         ReadInput();
-        if (!GameManager.gamePaused)
+        if (!GameManager.instance.gamePaused)
         {
             InputToVelocity();
             SetSpriteDirecction();
             controller.Move(ref moveVec);
 
-            if (!playerStatus.dynamodeActive || controller.cs.collidingDown || (!controller.cs.collidingDown && animationController.animationHashes.hs_Current != animationController.animationHashes.hs_Dash))
+            if (animationController.animationHashes.hs_Current != animationController.animationHashes.hs_Air_Dash)
             {
                 verticalVelocity += gravity * Time.deltaTime;
                 if (controller.cs.collidingUp)
@@ -236,17 +275,21 @@ public class Player : MonoBehaviour
             CalculateJumpForceAndGravity();
             CalculateDashForce();
 
+            if(!playerStatus.pressedJumpButton)
+                GameManager.instance.PlayerMoved();
+
             animationController.SetAnimationParameters();
 
             if (controller.cs.collidingDown)
             {
                 playerStatus.extraJumps = 1;
                 verticalVelocity = 0;
+                playerStatus.airDashes = 1;
             }
 
             playerStatus.Reset();
 
-            moveVecOld = moveVec;
+            moveVecOld = moveVec;            
         }
 
         HandleInputBuffer();

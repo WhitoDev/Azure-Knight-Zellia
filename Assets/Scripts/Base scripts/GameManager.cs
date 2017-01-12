@@ -3,25 +3,78 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour 
 {
-    private static float timeScaleNormal;
+    public static GameManager instance = null;
 
-    public static bool gamePaused;
-    public static GameObject AfterImage;
+    public float timeScaleNormal;
+    public bool gamePaused;
+    public GameObject AfterImage;
+    private Coroutine SleepCorutine;
 
     void Start()
     {
+        //PlayerPrefs.DeleteAll();
+    }
+
+    void Awake()
+    {
+        instance = this;
         timeScaleNormal = Time.timeScale;
     }
 
-    public static void PauseGame()
+    public void PauseGame()
     {
         Time.timeScale = 0;
         gamePaused = true;
     }
 
-    public static void UnpauseGame()
+    public void UnpauseGame()
     {
         Time.timeScale = timeScaleNormal;
         gamePaused = false;
+    }
+
+    public void PlayerMoved()
+    {
+        var platforms = FindObjectsOfType<PlatformController>();
+        
+        foreach(PlatformController platformController in platforms)
+        {
+            platformController.MovePassanger(false);
+        }
+    }
+
+    public void SleepGame(float seconds, bool overridePrevious)
+    {
+        if (overridePrevious)
+        {
+            if (SleepCorutine != null)
+            {
+                StopCoroutine(SleepCorutine);
+                SleepCorutine = null;
+            }
+            StartCoroutine(Sleep(seconds));
+        }
+
+        else
+        {
+            if(SleepCorutine == null)
+            {
+                StartCoroutine(Sleep(seconds));
+            }
+        }
+    }
+
+    IEnumerator Sleep(float seconds)
+    {
+        float start = Time.realtimeSinceStartup;
+
+        PauseGame();
+
+        while(Time.realtimeSinceStartup < start + seconds)
+        {
+            yield return null;
+        }
+
+        UnpauseGame();
     }
 }

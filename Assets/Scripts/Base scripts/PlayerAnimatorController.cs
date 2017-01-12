@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 public class PlayerAnimatorController : AnimationController2D 
 {
@@ -24,6 +26,7 @@ public class PlayerAnimatorController : AnimationController2D
         public int hs_Idle;
         public int hs_Run;
         public int hs_Dash;
+        public int hs_Air_Dash;
     }
 
     public AnimationHashes animationHashes = new AnimationHashes();
@@ -34,7 +37,7 @@ public class PlayerAnimatorController : AnimationController2D
         playerController = GetComponentInParent<Player>();
         characterController = GetComponentInParent<CharacterController2D>();
         
-        HashAnimations();
+        HashAnimations();        
     }
 
     void HashAnimations()
@@ -48,6 +51,7 @@ public class PlayerAnimatorController : AnimationController2D
         animationHashes.hs_Idle = Animator.StringToHash("Base Layer.Grounded.Idle");
         animationHashes.hs_Run = Animator.StringToHash("Base Layer.Grounded.Run");
         animationHashes.hs_Dash = Animator.StringToHash("Base Layer.Dash");
+        animationHashes.hs_Air_Dash = Animator.StringToHash("Base Layer.Air_Dash");
     }
 
     public void SetAnimationParameters()
@@ -122,9 +126,19 @@ public class PlayerAnimatorController : AnimationController2D
             playerController.playerStatus.canAttack = flag;
         }
     }
+
+    public void StartAfterImage(float seconds)
+    {
+        playerController.StartAfterImage(seconds);
+    }
+
+    public void StopAfterImage()
+    {
+        playerController.StopAfterImage();
+    }
 }
 
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(PlayerAnimatorController))]
 public class PlayerAnimatorEditor : AnimationController2DEditor
 {
@@ -133,3 +147,4 @@ public class PlayerAnimatorEditor : AnimationController2DEditor
         base.OnInspectorGUI();
     }    
 } 
+#endif

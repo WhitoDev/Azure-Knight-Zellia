@@ -19,15 +19,15 @@ AnimationClip:
   - curve:
     - time: 0
       value: {fileID: 21300062, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
-    - time: .166666672
+    - time: .125
       value: {fileID: 21300064, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
-    - time: .333333343
+    - time: .25
       value: {fileID: 21300064, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
-  m_SampleRate: 60
+  m_SampleRate: 80
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -47,7 +47,7 @@ AnimationClip:
   m_AnimationClipSettings:
     serializedVersion: 2
     m_StartTime: 0
-    m_StopTime: .350000024
+    m_StopTime: .262499988
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -67,7 +67,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_GenerateMotionCurves: 0
   m_Events:
-  - time: .166666672
+  - time: .125
     functionName: InstantiateObjectAsChild
     data: 
     objectReferenceParameter: {fileID: 116938, guid: 7e39648a7442baf4b95f8a2e32072038,
@@ -75,7 +75,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: .166666672
+  - time: .125
     functionName: MakeASmallHop
     data: 
     objectReferenceParameter: {fileID: 0}
