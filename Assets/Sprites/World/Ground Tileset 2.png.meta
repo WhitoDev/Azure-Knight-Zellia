@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 77fe0132725a68242b8ab0fca3c1d9ed
-timeCreated: 1483477920
+timeCreated: 1483550649
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -10,6 +10,7 @@ TextureImporter:
     21300006: Ground Tileset 2_3
     21300008: Ground Tileset 2_4
     21300010: Ground Tileset 2_5
+    21300012: Ground Tileset 2_6
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -112,6 +113,16 @@ TextureImporter:
         y: 452
         width: 198
         height: 60
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Ground Tileset 2_6
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 256
+        width: 33
+        height: 240
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}

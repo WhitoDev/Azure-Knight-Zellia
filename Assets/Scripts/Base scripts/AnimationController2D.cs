@@ -2,12 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System;
 using System.Reflection;
 
 public class AnimationController2D : MonoBehaviour 
 {
+    
+
     public List<AnimationEffect> effects = new List<AnimationEffect>();
 
     public Animator animator
@@ -21,6 +25,7 @@ public class AnimationController2D : MonoBehaviour
     }
     private Animator _animator;
 
+    #if UNITY_EDITOR
     public void SetAnimationEffects()
     {
         var effectsByAnimationClip = effects.GroupBy(c => c.targetAnimationClip).Select(grp => grp.ToList()).ToList();
@@ -86,14 +91,74 @@ public class AnimationController2D : MonoBehaviour
         }
     }
 
+    #endif
+
+    private GameObject InstantiateObjectBase(GameObject obj, Transform transformAnchor)
+    {
+        var objPos = obj.transform.position;
+
+        Vector3 objPositionOffset = Vector3.zero;
+        if (transformAnchor != null)
+            objPositionOffset = new Vector3(objPos.x * (Mathf.Sign(transformAnchor.localScale.x) == 1 ? 1 : -1), objPos.y, objPos.z);
+
+        Vector3 position = this.transform.position + objPositionOffset;
+
+        var objLocalScale = obj.transform.localScale;
+        
+        Vector3 newlocalScale = objLocalScale;
+        if(transformAnchor != null)
+            newlocalScale = new Vector3(objLocalScale.x * (Mathf.Sign(transformAnchor.localScale.x) == 1 ? 1 : -1), objLocalScale.y, objLocalScale.z);
+
+        var newObj = Instantiate(obj, position, Quaternion.identity) as GameObject;
+        newObj.transform.localScale = newlocalScale;
+
+        return newObj;
+    }
+
+    public void InstantiateObject(GameObject obj)
+    {
+        InstantiateObjectBase(obj, null);
+    }
+
+    public void InstantiateObjectFromThis(GameObject obj)
+    {
+        InstantiateObjectBase(obj, this.transform);
+    }
+
+    public void InstantiateObjectFromParent(GameObject obj)
+    {
+        InstantiateObjectBase(obj, this.transform.parent);
+    }
+
+    public void InstantiateObjectAsChild(GameObject obj)
+    {
+        var newObj = InstantiateObjectBase(obj, null);
+        newObj.transform.parent = this.transform.parent;
+    }
+
+    public void InstantiateObjectAsChildFromThis(GameObject obj)
+    {
+        var newObj = InstantiateObjectBase(obj, this.transform);
+        newObj.transform.parent = this.transform.parent;
+    }
+
+    public void InstantiateObjectAsChildFromParent(GameObject obj)
+    {
+        var newObj = InstantiateObjectBase(obj, this.transform.parent);
+        newObj.transform.parent = this.transform.parent;
+    }
+
     public void DoNothing() { }
 
     public void Destroy()
     {
         Destroy(this.gameObject);
     }
+
+
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(AnimationController2D))]
 public class AnimationController2DEditor : Editor
 {
@@ -122,7 +187,7 @@ public class AnimationController2DEditor : Editor
         string[] animationClipsNames = animationClips.Select(c => c.name).ToArray();
         
         Type myType = myController.GetType();
-        var methodsInfo = myType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        var methodsInfo = myType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
         List<String> methodsNames = methodsInfo.ToList().Select(elm => elm.Name).ToList();
 
         foreach(AnimationEffect effect in myController.effects)
@@ -213,3 +278,4 @@ public class AnimationController2DEditor : Editor
         }
     }    
 }
+#endif

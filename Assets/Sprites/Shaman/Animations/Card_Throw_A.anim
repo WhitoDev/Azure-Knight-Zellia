@@ -5,7 +5,7 @@ AnimationClip:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Dash
+  m_Name: Card_Throw_A
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -18,9 +18,15 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300042, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
-    - time: .266666681
-      value: {fileID: 21300042, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+      value: {fileID: 21300010, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - time: .100000001
+      value: {fileID: 21300012, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - time: .216666669
+      value: {fileID: 21300014, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - time: .300000012
+      value: {fileID: 21300016, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - time: .366666675
+      value: {fileID: 21300016, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -39,12 +45,15 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300042, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
-    - {fileID: 21300042, guid: cbe43f2f4e1549c43a2292107bfdfe71, type: 3}
+    - {fileID: 21300010, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - {fileID: 21300012, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - {fileID: 21300014, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - {fileID: 21300016, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
+    - {fileID: 21300016, guid: f25aae7d5f8c58a46b6d59a19802a9a3, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_StartTime: 0
-    m_StopTime: .283333361
+    m_StopTime: .383333355
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -64,17 +73,11 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_GenerateMotionCurves: 0
   m_Events:
-  - time: 0
-    functionName: SetReadHorizontalInputFlag
+  - time: .100000001
+    functionName: InstantiateObjectFromParent
     data: 
-    objectReferenceParameter: {fileID: 0}
+    objectReferenceParameter: {fileID: 142486, guid: 19afdc9bc17df524abe4242ac50f1035,
+      type: 2}
     floatParameter: 0
-    intParameter: 1
-    messageOptions: 0
-  - time: 0
-    functionName: StartAfterImage
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: .00999999978
     intParameter: 0
     messageOptions: 0

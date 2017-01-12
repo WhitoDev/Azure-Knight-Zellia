@@ -29,7 +29,6 @@ public class PlatformController : RayCaster
 
     void Start()
     {
-        rayAmount = 10;
         pathController = GetComponent<FollowPath>();
     }
 
@@ -40,14 +39,14 @@ public class PlatformController : RayCaster
         else
             moveVec = pathController.CalculateMoveVec();
 
-        MovePassanger(false);
+        //MovePassanger(false);
         CalculatePassangerPush();
         MovePassanger(true);
 
         this.transform.Translate(moveVec);
     }
 
-    void MovePassanger(bool pushPassangerBeforePlatform)
+    public void MovePassanger(bool pushPassangerBeforePlatform)
     {
         foreach(PassangerMovement passanger in passangerList)
         {
@@ -141,6 +140,9 @@ public class PlatformController : RayCaster
                 {
                     if (hit)
                     {
+                        if (hit.distance == 0)
+                            continue;
+
                         if (!movedPassangers.Contains(hit.transform))
                         {
                             movedPassangers.Add(hit.transform);
