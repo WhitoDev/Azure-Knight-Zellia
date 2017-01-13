@@ -42,3 +42,39 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: StageBackground
+    uniqueID: 4283787755
+    locked: 0
+  - name: Stage
+    uniqueID: 1654491457
+    locked: 0
+  - name: StageForeground
+    uniqueID: 2624801839
+    locked: 0
+  - name: ProjectileBackground
+    uniqueID: 1128635461
+    locked: 0
+  - name: Projectile
+    uniqueID: 2849002749
+    locked: 0
+  - name: ProjectileForeground
+    uniqueID: 1478827041
+    locked: 0
+  - name: EnemyBackground
+    uniqueID: 4205581675
+    locked: 0
+  - name: Enemy
+    uniqueID: 2828781873
+    locked: 0
+  - name: EnemyForeground
+    uniqueID: 2317284675
+    locked: 0
+  - name: PlayerBackground
+    uniqueID: 796729591
+    locked: 0
+  - name: Player
+    uniqueID: 2810193189
+    locked: 0
+  - name: PlayerForeground
+    uniqueID: 2758592715
+    locked: 0

@@ -78,11 +78,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effects:
-  - prefab: {fileID: 0}
+  - fold: 1
+    selectedParameterType: 0
+    objectValue: {fileID: 0}
+    booleanValue: 0
+    floatValue: 0
     targetAnimationClip: {fileID: 7400000, guid: f34fc79da6d9d15458e8169fec95d797,
       type: 2}
     frameToPlayIn: 8
-    totalFramesInAnimation: 6
     methodName: Destroy
 --- !u!212 &21292214
 SpriteRenderer:
@@ -106,7 +109,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1536374581
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: eee63a8796756524ebbc7b8cd2c94af6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -116,7 +119,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_SortingLayerID
+      value: -1536374581
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 169930}

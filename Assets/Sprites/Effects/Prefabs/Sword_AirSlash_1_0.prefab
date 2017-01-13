@@ -60,7 +60,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effects:
   - fold: 1
-    prefab: {fileID: 0}
+    selectedParameterType: 0
+    objectValue: {fileID: 0}
+    booleanValue: 0
+    floatValue: 0
     targetAnimationClip: {fileID: 7400000, guid: fabe180ecd655364eae74e6e4b20fa6e,
       type: 2}
     frameToPlayIn: 7
@@ -87,7 +90,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1536374581
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a4257ccf2de627748a66f1b2f09c5109, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -97,7 +100,11 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_SortingLayerID
+      value: -1536374581
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 116938}

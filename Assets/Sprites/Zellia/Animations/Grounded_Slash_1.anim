@@ -106,7 +106,7 @@ AnimationClip:
     intParameter: -1
     messageOptions: 0
   - time: .0666666701
-    functionName: InstantiateObject
+    functionName: InstantiateObjectFromParent
     data: 
     objectReferenceParameter: {fileID: 199358, guid: 2e75016a7ac48ea43acb072f0425ef7e,
       type: 2}
